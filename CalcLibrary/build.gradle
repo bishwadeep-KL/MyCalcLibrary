@@ -68,7 +68,7 @@ artifacts {
 }
 
 group = 'com.knowledgelens.calclibrary' // library package name
-version = '1.0.5'
+version = '1.0.6'
 
 install {
     repositories.mavenInstaller {
@@ -133,10 +133,10 @@ bintray {
         vcsUrl = 'https://github.com/bishwadeep-KL/MyCalcLibrary'
         publish = true
         version {
-            name = '1.0.5'
-            desc = 'This is updated version 1.0.5'
+            name = '1.0.6'
+            desc = 'This is updated version 1.0.6'
             released = new Date()
-            vcsTag = 'v1.0.5'
+            vcsTag = 'v1.0.6'
         }
     }
 }
