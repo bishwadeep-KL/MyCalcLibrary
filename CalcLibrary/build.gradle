@@ -3,6 +3,9 @@ plugins {
     id 'kotlin-android'
 }
 
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
@@ -41,4 +44,99 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+}
+
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+group = 'com.knowledgelens.calclibrary' // library package name
+version = '1.0.5'
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            name 'Bishwadeep'
+            description 'A library for finding out whether someone is on the list or the nice list'
+            url 'https://github.com/bishwadeep-KL/MyCalcLibrary'
+            inceptionYear '2020'
+
+            packaging 'aar'
+            groupId 'com.knowledgelens.calclibrary' //package name of your library
+            artifactId 'CalcLibrary' //Library name and must be same as package name on bintray
+            version '1.0.5'
+
+            licenses {
+                license {
+                    name 'The MIT License (MIT)'
+                    url 'https://opensource.org/licenses/MIT'
+                }
+            }
+            scm {
+                connection 'https://github.com/bishwadeep-KL/MyCalcLibrary'
+                url 'https://github.com/bishwadeep-KL/MyCalcLibrary'
+
+            }
+            developers {
+                developer {
+                    id = 'bishwadeep' //bintray username
+                    name 'Bishwadeep'
+                }
+            }
+        }
+    }
+}
+// Bintray
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+
+bintray {
+    // Fetch from local.properties file
+    // Please follow this step
+    /*
+     sdk.dir=/home/umesh/Android/Sdk
+     user=umeshbsa// bintray username
+     key=dd3e540bf673436cee35fc839607fe6252c117cc // Bintray profile key
+     // To find this key follow this step-
+      1. Go to Edit Profile and click on 'Api Key' from list
+      2. Fill your account password and show key, copy and paste on local.properties file.
+      Note- Please do not this.
+     user="umeshbsa"
+     key="dd3e540bf673436cee35fc839607fe6252c117cc" this is not accepted by bintray.
+     */
+    user = properties.getProperty('user')
+    key = properties.getProperty('key')
+    configurations = ['archives']
+    pkg {
+        repo = 'CalcLibrary' // must be same as on bintray repo name
+        name = 'CalcLibrary' // must be same of library name as bintray
+        userOrg = 'bishwadeep' // this is username of bintray account
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/bishwadeep-KL/MyCalcLibrary'
+        publish = true
+        version {
+            name = '1.0.5'
+            desc = 'This is updated version 1.0.5'
+            released = new Date()
+            vcsTag = 'v1.0.5'
+        }
+    }
 }
